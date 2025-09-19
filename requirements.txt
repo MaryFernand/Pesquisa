@@ -5,5 +5,4 @@ seaborn
 xgboost
 scikit-learn
 joblib
-math
 openpyxl
