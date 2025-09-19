@@ -103,7 +103,7 @@ pos_feriado = 1 if feriado_opcao == 'Pós-feriado' else 0
 
 #Lista de pratos
 nomes_visiveis = [
-    'Frango', 'Frango cremoso', 'Bovino cremoso', 'Bovino ensopado',
+    'Aves', 'Aves cremosas', 'Bovino cremoso', 'Bovino',
     'Misto', 'Peixe/Frutos do mar', 'Sem serviço', 'Suíno'
 ]
 
