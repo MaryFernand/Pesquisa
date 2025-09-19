@@ -5,6 +5,7 @@ import joblib
 import xgboost as xgb
 from sklearn.base import BaseEstimator, RegressorMixin
 from datetime import datetime, timedelta
+import math
 
 # Classe para previsão com valor mínimo zero
 class XGBRegressorPositivo(BaseEstimator, RegressorMixin):
@@ -80,6 +81,12 @@ st.markdown(f"**Data selecionada:** {data_base.day} de {nome_mes_escolhido} ({no
 dia_semana = data_base.weekday()
 mes = data_base.month
 
+#Variáveis cíclicas
+DIA_SEM_SIN = math.sin(2 * math.pi * dia_semana / 7)
+DIA_SEM_COS = math.cos(2 * math.pi * dia_semana / 7)
+MES_SIN = math.sin(2 * math.pi * (mes - 1) / 12)
+MES_COS = math.cos(2 * math.pi * (mes - 1) / 12)
+
 # Checkbox para Férias
 ferias = st.checkbox('Período de férias?')
 
@@ -94,23 +101,15 @@ feriado = 1 if feriado_opcao == 'Feriado' else 0
 pre_feriado = 1 if feriado_opcao == 'Pré-feriado' else 0
 pos_feriado = 1 if feriado_opcao == 'Pós-feriado' else 0
 
-# Lista de pratos e chaves conforme modelo
+#Lista de pratos
 nomes_visiveis = [
-    'Almôndegas de carne', 'Carne ao molho', 'Carne suína',
-    'Churrasquinho misto', 'Empadão', 'Estrogonofe de camarão',
-    'Estrogonofe de carne', 'Estrogonofe de frango', 'Sem prato (feriado/sábado/domingo)',
-    'Frango ao molho', 'Goulash', 'Guisado de lombo',
-    'Lasanha de frango', 'Lasanha à bolonhesa', 'Peixe grelhado ao molho',
-    'Picadinho', 'Não informado (sem registro)'
+    'Frango', 'Frango cremoso', 'Bovino cremoso', 'Bovino ensopado',
+    'Misto', 'Peixe/Frutos do mar', 'Sem serviço', 'Suíno'
 ]
 
 chaves_modelo = [
-    'prato_almondegas_de_carne', 'prato_carne_ao_molho', 'prato_carne_suina',
-    'prato_churrasquinho_misto', 'prato_empadao', 'prato_estrogonofe_de_camarao',
-    'prato_estrogonofe_de_carne', 'prato_estrogonofe_de_frango', 'prato_sem_prato',
-    'prato_frango_ao_molho', 'prato_goulash', 'prato_guisado_de_lombo',
-    'prato_lasanha_de_frango', 'prato_lasanha_a_bolonhesa', 'prato_peixe_grelhado_ao_molho',
-    'prato_picadinho', 'prato_nao_informado'
+    'prato_aves', 'prato_aves_cremosas', 'prato_bovino_cremosas', 'prato_bovino_ensopadas',
+    'prato_mistos', 'prato_peixe_fruto_do_mar', 'prato_sem_serviço', 'prato_suino'
 ]
 
 # Selectbox prato
@@ -119,8 +118,8 @@ prato_selecionado = st.selectbox(
     ['Nenhum selecionado'] + nomes_visiveis
 )
 
-if prato_selecionado == 'Não informado (sem registro)':
-    st.info("Use esta opção se não souber qual prato foi servido no dia. Não se refere à ausência de opções na lista.")
+if prato_selecionado == 'Sem serviço':
+    st.info("Use esta opção para feriados, sábados ou domingos.")
 
 # Inicializa pratos com zero
 pratos_input = {chave: 0 for chave in chaves_modelo}
@@ -155,8 +154,11 @@ if st.button("Prever quantidade"):
             'FERIADO': int(feriado),
             'PRÉ_FERIADO': int(pre_feriado),
             'PÓS_FERIADO': int(pos_feriado),
-            'DIA_SEMANA': dia_semana,
-            'MES': mes
+            'DIA_SEM_SIN': DIA_SEM_SIN,
+            'DIA_SEM_COS': DIA_SEM_COS,
+            'MES_SIN': MES_SIN,
+            'MES_COS': MES_COS
+            
         }
         entrada.update(pratos_input)
         entrada.update(quantidades)
@@ -166,8 +168,6 @@ if st.button("Prever quantidade"):
         pred = modelo.predict(entrada_df)
 
         st.success(f'Previsão da quantidade: {pred[0]:.0f}')
-
-import streamlit as st
 
 # --- RODAPÉ ---
 st.markdown("---")
