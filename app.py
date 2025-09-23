@@ -148,6 +148,9 @@ if st.button("Prever quantidade"):
     elif feriado == 1 or dia_semana in [5, 6]:  # Sábado ou Domingo
         st.warning("Neste dia não há venda de quentinhas.")
         st.success("Previsão da quantidade: 0")
+    elif prato_selecionado == 'Sem serviço':
+        st.warning("Opção 'Sem serviço' selecionada. Não há vendas neste dia.")
+        st.success("Previsão da quantidade: 0")
     else:
         entrada = {
             'É_FÉRIAS': int(ferias),
