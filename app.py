@@ -28,7 +28,7 @@ class XGBRegressorPositivo(BaseEstimator, RegressorMixin):
         return self
 
 # Carregar o modelo salvo
-modelo = joblib.load('modelo_xgboost.pkl23')
+modelo = joblib.load('modelo_xgboostA.pkl2')
 
 st.title("Previsão de Quantidade de Refeições")
 
