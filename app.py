@@ -28,7 +28,7 @@ class XGBRegressorPositivo(BaseEstimator, RegressorMixin):
         return self
 
 # Carregar o modelo salvo
-modelo = joblib.load('modelo_xgboost.pkl2')
+modelo = joblib.load('modelo_xgboost.pkl23')
 
 st.title("Previsão de Quantidade de Refeições")
 
@@ -109,9 +109,9 @@ nomes_visiveis = [
 
 chaves_modelo = [
     'prato_aves', 'prato_aves_cremosas', 'prato_bovino_cremosas', 'prato_bovino_ensopadas',
-    'prato_mistos', 'prato_peixe_fruto_do_mar', 'prato_sem_serviço', 'prato_suino'
+    'prato_mistos', 'prato_peixe_fruto_do_mar', 'prato_prato_nao_informado', 
+    'prato_sem_serviço', 'prato_suino'
 ]
-
 # Selectbox prato
 prato_selecionado = st.selectbox(
     "Prato servido (escolha o prato que mais se aproxima do que foi servido):",
@@ -127,6 +127,13 @@ pratos_input = {chave: 0 for chave in chaves_modelo}
 if prato_selecionado != 'Nenhum selecionado':
     idx = nomes_visiveis.index(prato_selecionado)
     pratos_input[chaves_modelo[idx]] = 1
+
+# Garantir que 'prato_prato_nao_informado' fique sempre 0
+pratos_input['prato_prato_nao_informado'] = 0
+
+# Explicação para refeições cremosas
+if prato_selecionado in ['Aves cremosas', 'Bovino cremoso']:
+    st.info("Refeições cremosas incluem strogonoff, empadão, lasanha e fricassê.")
 
 # Entrada das quantidades vendidas nos 5 dias úteis anteriores com dias traduzidos
 st.markdown("### Informe as quantidades vendidas nos 5 dias úteis anteriores")
