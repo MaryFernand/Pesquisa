@@ -158,7 +158,10 @@ if st.button("Prever quantidade"):
     elif prato_selecionado == 'Sem serviço':
         st.warning("Opção 'Sem serviço' selecionada. Não há vendas neste dia.")
         st.success("Previsão da quantidade: 0")
+    elif all(v == 0 for v in quantidades.values()):
+        st.warning("As quantidades dos últimos dias estão todas zeradas. A previsão não será feita.")
     else:
+        # segue a previsão normalmente
         entrada = {
             'É_FÉRIAS': int(ferias),
             'FERIADO': int(feriado),
@@ -168,15 +171,12 @@ if st.button("Prever quantidade"):
             'DIA_SEM_COS': DIA_SEM_COS,
             'MES_SIN': MES_SIN,
             'MES_COS': MES_COS
-            
         }
         entrada.update(pratos_input)
         entrada.update(quantidades)
 
         entrada_df = pd.DataFrame([entrada])
-
         pred = modelo.predict(entrada_df)
-
         st.success(f'Previsão da quantidade: {pred[0]:.0f}')
 
 # --- RODAPÉ ---
